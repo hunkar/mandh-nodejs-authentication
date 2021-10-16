@@ -36,38 +36,6 @@ const initializePassportForUser = (app) => {
             done(null, false, { message: enums.wrongPassword });
             return;
         }
-
-        // bcrypt.compare(password, user.password, (err, isMatch) => {
-        //     if (err) {
-        //         done(err);
-        //         return;
-        //     }
-
-        //     if (isMatch) {
-        //         delete user.password;
-        //         done(null, user);
-        //         return;
-        //     } else {
-        //         done(null, false, { message: enums.wrongPassword });
-        //         return;
-        //     }
-        // })
-
-
-
-        // try {
-        //     if (await bcrypt.compare(password, user.password)) {
-        //         delete user.password;
-        //         done(null, user);
-        //         return;
-        //     } else {
-        //         done(null, false, { message: enums.wrongPassword });
-        //         return;
-        //     }
-        // } catch (e) {
-        //     done(e);
-        //     return;
-        // }
     }
 
     passport.use(new LocalStrategy({ usernameField: config.usernameField, passwordField: config.passwordField, }, authenticateUser))
@@ -86,7 +54,7 @@ const initializePassportForUser = (app) => {
     })
 
     app.use(session({
-        secret: 'secrettexthere',
+        secret: config.sessionSecret,
         saveUninitialized: true,
         resave: true,
         cookie: {
@@ -98,18 +66,27 @@ const initializePassportForUser = (app) => {
     app.use(passport.session())
 }
 
-const initForGoogle = (app) => {
+const initializePassportForGoogle = (app) => {
     initializeDb();
 
     const authenticateUserForGoogle = async function (accessToken, refreshToken, profile, done) {
-        let user = await config.getOrInsertUserByGoogleId({ googleId: profile.id, accessToken, refreshToken, profile });
+        let user = profile && profile._json && profile._json.email && await config.getOrInsertUserByGoogleId({
+            googleId: profile.id, accessToken, refreshToken, profile: {
+                name: profile._json.given_name,
+                surname: profile._json.family_name,
+                userName: profile._json.email.split('@')[0],
+                email: profile._json.email,
+                profileImageUrl: profile._json.picture,
+            }
+        });
         user = user && user.toJSON();
 
-        delete user.password;
 
-        if (user && user.err)
-            done(user.err, null);
+        if (!user || user.err) {
+            done(user, null);
+        }
         else {
+            delete user.password;
             done(null, user);
         }
     }
@@ -122,17 +99,29 @@ const initForGoogle = (app) => {
 
     passport.serializeUser((user, done) => done(null, user.id))
     passport.deserializeUser(async (id, done) => {
-        let user = await config.getUserByGoogleId(id);
+        let user = await config.getUserById(id);
         user = user && user.toJSON();
 
-        return done(null, user)
+        delete (user && user.password);
+
+        done(null, user);
+        return;
     })
 
+    app.use(session({
+        secret: config.sessionSecret,
+        saveUninitialized: true,
+        resave: true,
+        cookie: {
+            secure: false,
+            maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
+        },
+    }));
     app.use(passport.initialize());
     app.use(passport.session())
 }
 
 module.exports = {
     initializePassportForUser,
-    initForGoogle
+    initializePassportForGoogle
 }

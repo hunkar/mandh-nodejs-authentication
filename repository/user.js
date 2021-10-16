@@ -17,8 +17,7 @@ const getOrInsertUserByGoogleId = async ({ googleId, accessToken, refreshToken, 
 
     if (user) return user;
 
-    //TODO profile will be manipulated for db model.
-    return getModel() && await getModel().createUser({
+    return getModel() && await getModel().create({
         ...profile,
         sso: true,
         customData: {

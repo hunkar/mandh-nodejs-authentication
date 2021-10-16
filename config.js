@@ -16,12 +16,15 @@ const config = {
     passwordField: enums.defaultPasswordField,
     dbName: enums.defaultDbName,
     connectionString: '',
+    sessionSecret: 'secretKeyHere',
     host: 'http://www.example.com.tr',
     userRouterName: 'user',
     googleRouterName: 'google',
     GOOGLE_CLIENT_ID: 'GOOGLE_CLIENT_ID',
     GOOGLE_CLIENT_SECRET: 'GOOGLE_CLIENT_SECRET',
-    googleScopes: ['https://www.googleapis.com/auth/plus.login']
+    googleScopes: ['https://www.googleapis.com/auth/plus.login',
+        'https://www.googleapis.com/auth/userinfo.email',
+        'https://www.googleapis.com/auth/userinfo.profile']
 }
 
 const setConfig = (configValues) => {

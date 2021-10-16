@@ -31,7 +31,7 @@ const initModel = (dbName) => {
             type: String
         },
         sso: {
-            type: String,
+            type: Boolean,
             default: () => false
         },
         password: {

@@ -1,6 +1,6 @@
 {
   "name": "mandh-nodejs-authentication",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Mandh solutions authentication library for servers.",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,7 @@
     "body-parser": "^1.19.0",
     "express-async-router": "^0.1.15",
     "express-session": "^1.17.2",
+    "google-auth-library": "^7.9.2",
     "mandh-mongoose-adapter": "^1.1.0",
     "mandh-nodejs-utils": "^2.0.1",
     "nodemailer": "^6.6.3",

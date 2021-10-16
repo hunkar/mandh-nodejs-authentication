@@ -269,11 +269,11 @@ describe('#user #getOrInsertUserByGoogleId', function () {
         };
 
         const findByField = sinon.fake(() => new Promise(res => { res(null) }));
-        const createUser = sinon.fake(() => new Promise(res => { res(mockUserData) }));
+        const create = sinon.fake(() => new Promise(res => { res(mockUserData) }));
 
         const getModel = sinon.fake(() => ({
             findByField,
-            createUser,
+            create,
         }));
 
         const userRouter = proxyquire('../repository/user.js', {
@@ -285,11 +285,11 @@ describe('#user #getOrInsertUserByGoogleId', function () {
         const result = await userRouter.getOrInsertUserByGoogleId(mockProfile);
 
         assert.strictEqual(findByField.callCount, 1);
-        assert.strictEqual(createUser.callCount, 1);
+        assert.strictEqual(create.callCount, 1);
         assert.strictEqual(getModel.callCount, 4);
         assert.strictEqual(result, mockUserData);
         assert(findByField.calledOnceWithExactly('customData.googleId', mockProfile.googleId));
-        assert(createUser.calledOnceWithExactly(mockUserData));
+        assert(create.calledOnceWithExactly(mockUserData));
     });
 });
 

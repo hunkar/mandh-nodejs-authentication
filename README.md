@@ -77,12 +77,15 @@ setConfig({
     passwordField: enums.defaultPasswordField, //password
     dbName: enums.defaultDbName, //MandhUser
     connectionString: '', //MongoDB connection string.
+    sessionSecret: 'secretKeyHere',
     host: 'http://www.example.com.tr', //Server host for redirections.
     userRouterName: 'user', //user router name can be modified.
     googleRouterName: 'google',
     GOOGLE_CLIENT_ID: 'GOOGLE_CLIENT_ID',
     GOOGLE_CLIENT_SECRET: 'GOOGLE_CLIENT_SECRET',
-    googleScopes: ['https://www.googleapis.com/auth/plus.login']
+    googleScopes: ['https://www.googleapis.com/auth/plus.login',
+        'https://www.googleapis.com/auth/userinfo.email',
+        'https://www.googleapis.com/auth/userinfo.profile']
 });
 
 
